@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Recetas Saludables{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="card auth-card">
+        <div class="card-body">
+            <h2 class="text-center mb-4">Iniciar Sesión</h2>
+            <form method="POST" action="{{ url_for('iniciar_sesion') }}">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success">Iniciar Sesión</button>
+                </div>
+            </form>
+            <div class="text-center mt-3">
+                <p>¿No tienes una cuenta? <a href="{{ url_for('crear_cuenta') }}">Regístrate aquí</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

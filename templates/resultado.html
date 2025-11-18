@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+   <style>
+    .resultados{
+        margin: 0 auto;
+        width: fit-content;
+    }
+    .acciones{
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+   </style>
+    <title>Document</title>
+</head>
+<body>
+    <div class="resultados" id="container">
+    <h2>Lista de usuarios</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>DNI</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            { % for usuario in usuarios % }
+            <tr>
+                <td>{{ usuario[0] }}</td>
+                <td>{{ usuario[1] }}</td>
+                <td>
+                    <div class="acciones">
+                        <form action="/eliminar/{{ usuario[0] }}" id="form_r" method="post"><input type="hidden" name=""
+                            value="{{usuario[0]}}" name="eliminar"><input type="submit" value="Eliminar" name="eliminar" class="btn btn-danger"></form>
+                           <form action="/editar/{{ usuario[0] }}" id="form_r" method="post"><input type="hidden" name=""
+                            value="{{usuario[0]}}" name="editar"><input type="submit" value="Editar" name="editar" class="btn btn-secondary"></form>  
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+
+
+
+    </table>
+    </div>
+
+    <a href="{{ url_for("index") }}">Volver al inicio</a>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - Recetas Saludables{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Mi Perfil</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-user-circle fa-5x text-success"></i>
+                            </div>
+                            <h4>{{ usuario.nombre }}</h4>
+                            <p class="text-muted">{{ usuario.email }}</p>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>Información de la cuenta</h5>
+                            <hr>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Email:</strong> {{ usuario.email }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <a href="{{ url_for('cerrar_sesion') }}" class="btn btn-outline-danger">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

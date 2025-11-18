@@ -1,0 +1,13 @@
+# Clear the .gitignore file
+echo "" > .gitignore
+
+# Add the correct patterns
+echo ".venv/" >> .gitignore
+echo "__pycache__/" >> .gitignore
+echo "*.py[cod]" >> .gitignore
+echo "*.sqlite" >> .gitignore
+echo "*.db" >> .gitignore
+echo "*.log" >> .gitignore
+echo "*.pyc" >> .gitignore
+echo "*.pyo" >> .gitignore
+echo ".env" >> .gitignore

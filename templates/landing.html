@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Recetas Saludables - Inicio{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+<style>
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                    url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 100px 0;
+        text-align: center;
+    }
+    
+    .feature-card {
+        transition: transform 0.3s;
+        margin-bottom: 20px;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">Descubre las mejores recetas saludables</h1>
+        <p class="lead mb-4">Encuentra inspiración para cocinar comidas deliciosas y nutritivas</p>
+        {% if 'user_id' not in session %}
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('crear_cuenta') }}" class="btn btn-success btn-lg">Regístrate Gratis</a>
+            <a href="{{ url_for('iniciar_sesion') }}" class="btn btn-outline-light btn-lg">Iniciar Sesión</a>
+        </div>
+        {% else %}
+        <a href="#" class="btn btn-success btn-lg">Explorar Recetas</a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container mb-5">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <div class="card-body">
+                    <i class="fas fa-utensils fa-3x mb-3 text-success"></i>
+                    <h3>Recetas Saludables</h3>
+                    <p>Descubre cientos de recetas deliciosas y nutritivas para mantener un estilo de vida saludable.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <div class="card-body">
+                    <i class="fas fa-book-open fa-3x mb-3 text-success"></i>
+                    <h3>Guías de Cocina</h3>
+                    <p>Aprende técnicas y consejos de cocina para preparar comidas saludables de manera sencilla.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100">
+                <div class="card-body">
+                    <i class="fas fa-heartbeat fa-3x mb-3 text-success"></i>
+                    <h3>Planificación de Comidas</h3>
+                    <p>Organiza tus comidas semanales y mantén una alimentación balanceada.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Recipes Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Recetas Populares</h2>
+        <div class="row">
+            <!-- Aquí irían las tarjetas de recetas populares -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" 
+                         class="card-img-top" alt="Ensalada Saludable">
+                    <div class="card-body">
+                        <h5 class="card-title">Ensalada César Saludable</h5>
+                        <p class="card-text">Una versión más ligera de la clásica ensalada César.</p>
+                        <a href="#" class="btn btn-outline-success">Ver Receta</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Más tarjetas de recetas... -->
+        </div>
+    </div>
+</section>
+{% endblock %}

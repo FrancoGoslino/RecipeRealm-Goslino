@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}{{ receta.titulo }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('ver_recetas') }}">Recetas</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ receta.titulo }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Columna principal -->
+        <div class="col-lg-8">
+            <!-- Imagen principal -->
+            {% if receta.imagen_url %}
+            <div class="card mb-4 border-0">
+                <img src="{{ receta.imagen_url }}" class="card-img rounded-3" alt="{{ receta.titulo }}">
+            </div>
+            {% endif %}
+            
+            <!-- Encabezado -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h1 class="mb-2">{{ receta.titulo }}</h1>
+                    <div class="d-flex align-items-center text-muted mb-3">
+                        <div class="me-3">
+                            <i class="far fa-user me-1"></i> {{ receta.autor }}
+                        </div>
+                        <div class="me-3">
+                            <i class="far fa-clock me-1"></i> {{ receta.tiempo_preparacion }} min
+                        </div>
+                        <div>
+                            <i class="fas fa-utensils me-1"></i> {{ receta.porciones }} porciones
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones de acción -->
+                <div class="btn-group" role="group">
+                    <button type="button" 
+                            class="btn btn-outline-secondary btn-like {% if voto_usuario == 1 %}active{% endif %}"
+                            data-recipe-id="{{ receta.id_receta }}"
+                            data-vote-type="1">
+                        <i class="far fa-thumbs-up me-1"></i>
+                        <span class="like-count">{{ estadisticas.likes or 0 }}</span>
+                    </button>
+                    <button type="button" 
+                            class="btn btn-outline-secondary btn-dislike {% if voto_usuario == -1 %}active{% endif %}"
+                            data-recipe-id="{{ receta.id_receta }}"
+                            data-vote-type="-1">
+                        <i class="far fa-thumbs-down me-1"></i>
+                        <span class="dislike-count">{{ estadisticas.dislikes or 0 }}</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Etiquetas -->
+            {% if receta.etiquetas %}
+            <div class="mb-4">
+                {% for etiqueta in receta.etiquetas %}
+                <a href="{{ url_for('ver_recetas', etiqueta=etiqueta.nombre) }}" 
+                   class="badge bg-light text-dark text-decoration-none me-1 mb-1">
+                    {{ etiqueta.nombre }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Descripción -->
+            <div class="card mb-4 border-0 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Descripción</h5>
+                    <p class="card-text">{{ receta.descripcion }}</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Ingredientes -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="fas fa-shopping-basket me-2 text-primary"></i>Ingredientes</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                {% for ingrediente in receta.ingredientes.split('\n') if ingrediente.strip() %}
+                                <li class="list-group-item border-0 px-0 py-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="ing-{{ loop.index }}">
+                                        <label class="form-check-label" for="ing-{{ loop.index }}">
+                                            {{ ingrediente }}
+                                        </label>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Instrucciones -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="fas fa-list-ol me-2 text-primary"></i>Preparación</h5>
+                        </div>
+                        <div class="card-body">
+                            <ol class="list-group list-group-numbered list-group-flush">
+                                {% for paso in receta.instrucciones.split('\n') if paso.strip() %}
+                                <li class="list-group-item border-0 px-0 py-2">
+                                    {{ paso }}
+                                </li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comentarios -->
+            <div class="card mb-4 border-0" id="comentarios">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="far fa-comments me-2 text-primary"></i>Comentarios</h5>
+                </div>
+                <div class="card-body">
+                    {% if 'user_id' in session %}
+                    <!-- Formulario de comentario -->
+                    <form method="post" action="{{ url_for('comentar_receta', id_receta=receta.id_receta) }}" 
+                          class="mb-4" id="form-comentario">
+                        <div class="mb-3">
+                            <label for="contenido" class="form-label">Deja tu comentario</label>
+                            <textarea class="form-control" id="contenido" name="contenido" rows="3" 
+                                     placeholder="¿Qué te pareció esta receta?" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publicar comentario</button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <a href="{{ url_for('iniciar_sesion') }}" class="alert-link">Inicia sesión</a> para dejar un comentario.
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Lista de comentarios -->
+                    <div class="mt-4">
+                        {% if comentarios %}
+                            {% for comentario in comentarios %}
+                            <div class="card mb-3 border-0 border-bottom">
+                                <div class="card-body p-0 pb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-0">{{ comentario.nombre }} {{ comentario.apellido }}</h6>
+                                            <small class="text-muted">
+                                                {{ comentario.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text mt-2">{{ comentario.contenido }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center py-4">Aún no hay comentarios. ¡Sé el primero en comentar!</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Barra lateral -->
+        <div class="col-lg-4">
+            <!-- Sobre el autor -->
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center" 
+                             style="width: 80px; height: 80px;">
+                            <i class="fas fa-user fa-3x text-muted"></i>
+                        </div>
+                    </div>
+                    <h5 class="card-title mb-1">{{ receta.autor }}</h5>
+                    <p class="text-muted small mb-3">Cocinero/a casero</p>
+                    <p class="card-text text-muted small">
+                        Compartiendo recetas deliciosas y fáciles de preparar.
+                    </p>
+                    <a href="#" class="btn btn-outline-primary btn-sm">
+                        Ver más recetas
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Recetas relacionadas -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">Otras recetas que te pueden gustar</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for relacionada in recetas_relacionadas %}
+                    <a href="{{ url_for('ver_receta', id_receta=relacionada.id_receta) }}" 
+                       class="list-group-item list-group-item-action border-0 py-3">
+                        <div class="d-flex align-items-center">
+                            {% if relacionada.imagen_url %}
+                            <img src="{{ relacionada.imagen_url }}" 
+                                 class="rounded me-3" 
+                                 style="width: 60px; height: 60px; object-fit: cover;" 
+                                 alt="{{ relacionada.titulo }}">
+                            {% else %}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 60px; height: 60px;">
+                                <i class="fas fa-utensils text-muted"></i>
+                            </div>
+                            {% endif %}
+                            <div>
+                                <h6 class="mb-0">{{ relacionada.titulo }}</h6>
+                                <small class="text-muted">
+                                    <i class="far fa-clock me-1"></i> {{ relacionada.tiempo_preparacion }} min
+                                </small>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejar like/dislike
+    document.querySelectorAll('.btn-like, .btn-dislike').forEach(button => {
+        button.addEventListener('click', async function() {
+            const recipeId = this.dataset.recipeId;
+            const voteType = parseInt(this.dataset.voteType);
+            const isActive = this.classList.contains('active');
+            
+            try {
+                const response = await fetch(`/api/receta/${recipeId}/votar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        tipo_voto: isActive ? 0 : voteType
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Actualizar contadores
+                    document.querySelector('.like-count').textContent = data.likes;
+                    document.querySelector('.dislike-count').textContent = data.dislikes;
+                    
+                    // Actualizar estilos de botones
+                    document.querySelector('.btn-like').classList.toggle('active', data.mi_voto === 1);
+                    document.querySelector('.btn-dislike').classList.toggle('active', data.mi_voto === -1);
+                }
+            } catch (error) {
+                console.error('Error al votar:', error);
+                alert('Ocurrió un error al procesar tu voto');
+            }
+        });
+    });
+    
+    // Marcar ingredientes como completados al hacer clic
+    document.querySelectorAll('.form-check-input').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const label = this.nextElementSibling;
+            if (this.checked) {
+                label.style.textDecoration = 'line-through';
+                label.style.color = '#6c757d';
+            } else {
+                label.style.textDecoration = 'none';
+                label.style.color = '';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
