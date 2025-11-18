@@ -27,7 +27,7 @@
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
+<!-- Hero  -->
 <section class="hero-section mb-5">
     <div class="container">
         <h1 class="display-4 fw-bold mb-4">Descubre las mejores recetas saludables</h1>
@@ -43,7 +43,7 @@
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- Features  -->
 <section class="container mb-5">
     <div class="row text-center">
         <div class="col-md-4">
@@ -77,24 +77,34 @@
 </section>
 
 <!-- Popular Recipes Section -->
-<section class="bg-light py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Recetas Populares</h2>
-        <div class="row">
-            <!-- Aquí irían las tarjetas de recetas populares -->
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" 
-                         class="card-img-top" alt="Ensalada Saludable">
-                    <div class="card-body">
-                        <h5 class="card-title">Ensalada César Saludable</h5>
-                        <p class="card-text">Una versión más ligera de la clásica ensalada César.</p>
-                        <a href="#" class="btn btn-outline-success">Ver Receta</a>
+<!-- Recetas Populares -->
+<section class="container mb-5">
+    <h2 class="text-center mb-4">Recetas Populares</h2>
+    <div class="row">
+        {% for receta in recetas_populares %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ receta.imagen_url or 'https://via.placeholder.com/300x200?text=Sin+imagen' }}" 
+                     class="card-img-top" 
+                     alt="{{ receta.titulo }}"
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ receta.titulo }}</h5>
+                    <p class="card-text">{{ receta.descripcion|truncate(100) }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted small">
+                            <i class="far fa-clock me-1"></i> {{ receta.tiempo_preparacion }} min
+                            <i class="fas fa-utensils ms-3 me-1"></i> {{ receta.porciones }} porc.
+                        </span>
+                        <a href="{{ url_for('ver_receta', id_receta=receta.id_receta) }}" 
+                           class="btn btn-outline-primary btn-sm">
+                            Ver receta
+                        </a>
                     </div>
                 </div>
             </div>
-            <!-- Más tarjetas de recetas... -->
         </div>
+        {% endfor %}
     </div>
 </section>
 {% endblock %}

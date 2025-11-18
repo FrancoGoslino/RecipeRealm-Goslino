@@ -118,6 +118,7 @@ class Conexion:
                     pass
             comentarios.append(comentario)
         return comentarios
+    
     def crear_tabla_empleado(self):
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS empleado (
@@ -179,6 +180,7 @@ class Conexion:
             )
         """)
         self.conexion.commit()
+    
     def crear_tabla_receta_has_ingrediente(self):
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS receta_has_ingrediente (
@@ -289,6 +291,7 @@ class Conexion:
             print(f"Error al crear las tablas: {e}")
             self.conexion.rollback()
             return False
+    
     # -------------------------------------------------------------
     # CREAR TODAS LAS TABLAS EN ORDEN CORRECTO SIN CONFLICTOS
     # -------------------------------------------------------------
@@ -328,7 +331,6 @@ class Conexion:
             self.conexion.rollback()
             return False
 
-    # Añade estos métodos si no existen
     def crear_tabla_etiquetas(self):
         """Crea la tabla de etiquetas para las recetas"""
         self.cursor.execute("""
@@ -689,3 +691,13 @@ class Conexion:
         self.cursor.execute("SELECT * FROM usuario WHERE id_usuario = ?", (id_usuario,))
         usuario = self.cursor.fetchone()
         return dict(usuario) if usuario else None
+
+    def obtener_ultimas_recetas(self, limite=6):
+        self.cursor.execute("""
+            SELECT r.*, u.nombre as autor 
+            FROM recetas r
+            JOIN usuario u ON r.id_usuario = u.id_usuario
+            ORDER BY r.fecha_creacion DESC
+            LIMIT ?
+        """, (limite,))
+        return [dict(row) for row in self.cursor.fetchall()]

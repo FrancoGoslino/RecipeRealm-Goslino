@@ -30,7 +30,9 @@ def login_required(f):
 # Ruta principal (landing page)
 @app.route('/')
 def index():
-    return render_template('landing.html')
+    with get_db_connection() as db:
+        recetas_populares = db.obtener_ultimas_recetas(limite=6)
+    return render_template('landing.html', recetas_populares=recetas_populares)
     
 
 # Ruta para el formulario de registro
