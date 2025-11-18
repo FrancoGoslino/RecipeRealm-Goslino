@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from base_datos.conexion import Conexion
 
 # Crear una instancia de la conexión
@@ -10,7 +9,7 @@ with Conexion("base_datos/recetas.db") as db:
     usuario_id = db.crear_usuario(
         nombre="Test",
         apellido="User",
-        email="test@example.com",
+        email="test@example.com",  
         password="test123"
     )
     
@@ -18,7 +17,7 @@ with Conexion("base_datos/recetas.db") as db:
         print(f"Usuario creado exitosamente con ID: {usuario_id}")
     else:
         print("Error al crear el usuario")
-=======
+
 class receta:
     def __init__(self, nombre, ingredientes, instrucciones):
         self.nombre = nombre
@@ -47,4 +46,3 @@ mostrar_receta: receta = receta(
 )
 
 mostrar_receta.mostrar_receta()
->>>>>>> d1e0621a3fc4cb6d6d9518b5955b704353e98ee7

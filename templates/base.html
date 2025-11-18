@@ -31,11 +31,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('ver_recetas') }}">Recetas</a>
                     </li>
-                    {% if 'user_id' in session %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('crear_receta') }}">Crear Receta</a>
-                    </li>
-                    {% endif %}
+                    
                 </ul>
                 <ul class="navbar-nav">
                     {% if 'user_id' in session %}
